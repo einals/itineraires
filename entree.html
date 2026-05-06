@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Liste des fichiers du dépôt</title>
+</head>
+<body>
+<h1>Fichiers dans le dépôt</h1>
+<ul id="file-list">Chargement...</ul>
+
+<script>
+const repoOwner = "einals";
+const repoName = "itineraires";
+const branch = "main";
+const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`;
+
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    const files = data.tree.filter(item => item.type === "blob");
+    const ul = document.getElementById("file-list");
+    ul.innerHTML = ""; // vide le message de chargement
+    files.forEach(file => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      // Construire le lien vers votre site GitHub Pages
+      a.href = "https://einals.github.io/itineraires/" + file.path;
+      a.target = "_blank"; // ouvrir dans un nouvel onglet
+      a.textContent = file.path;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  })
+  .catch(error => {
+    document.getElementById("file-list").textContent = "Erreur lors du chargement.";
+    console.error(error);
+  });
+</script>
+</body>
+</html>
